@@ -8,8 +8,13 @@
 class GLApp
 {
 private:
-    GLFWwindow *window;
+    int _width;
+    int _height;
+    const std::string &_name;
+    GLFWwindow *_window;
     void init();
+
+
 
 public:
     GLApp(const int width, const int height,  const std::string &name);
@@ -17,35 +22,42 @@ public:
     void render();
 };
 
-GLApp::GLApp(const int width, const int height,  const std::string &name)
+GLApp::GLApp(const int width, const int height,  const std::string &name) : _width(width),_height(height),_name(name)
 {
+
+    init();
+
+
+}
+
+
+void GLApp::init(){
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
+    _window = glfwCreateWindow(_width, _height, _name.c_str(), NULL, NULL);
 
-    if (!window)
+    if (!_window)
         throw std::runtime_error("Window couldn't be oppened.");
+    glfwMakeContextCurrent(_window);
 
-    glfwMakeContextCurrent(window);
 }
-
 
 void GLApp::render()
 {
-    while (!glfwWindowShouldClose(window)){
+    while (!glfwWindowShouldClose(_window)){
         glfwPollEvents();
         glClearColor(.2, .4, .6, 1);
         glClear(GL_COLOR_BUFFER_BIT);
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(_window);
     }
 }
 
 GLApp::~GLApp()
 {
-    if (window != nullptr)
-        glfwDestroyWindow(window);
+    if (_window != nullptr)
+        glfwDestroyWindow(_window);
     glfwTerminate();
 }
