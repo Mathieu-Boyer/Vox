@@ -29,7 +29,7 @@ class Mesh
         Mesh& operator=(Mesh&&);
 
         void setup();
-        void draw();
+        void draw() const;
         ~Mesh();
 };
 
@@ -58,7 +58,7 @@ Mesh& Mesh::operator=(Mesh&& src){
     return *this;
 }
 
-void Mesh::draw(){
+void Mesh::draw() const{
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, _vertices.size());
     glBindVertexArray(0);

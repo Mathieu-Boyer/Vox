@@ -16,6 +16,7 @@ private:
 
 public:
     Texture(const std::string &path);
+    void bind(unsigned int unit = 0) const;
     ~Texture();
 };
 
@@ -24,7 +25,6 @@ Texture::Texture(const std::string &path)
 
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
-
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -39,7 +39,10 @@ Texture::Texture(const std::string &path)
 
     stbi_image_free(data);
 }
-
+void Texture::bind(unsigned int unit) const{
+    glActiveTexture(GL_TEXTURE0 + unit);
+    glBindTexture(GL_TEXTURE_2D, texture);
+}
 Texture::~Texture()
 {
     glDeleteTextures(1, &texture);

@@ -8,6 +8,8 @@
 #include "Texture.hpp"
 #include "Model.hpp"
 #include "Mesh.hpp"
+#include "Renderable.hpp"
+#include "Camera.hpp"
 
 
 
@@ -31,10 +33,7 @@ public:
 
 GLApp::GLApp(const int width, const int height,  const std::string &name) : _width(width),_height(height),_name(name)
 {
-
     init();
-
-
 }
 
 
@@ -50,6 +49,8 @@ void GLApp::init(){
         throw std::runtime_error("Window couldn't be oppened.");
     glfwMakeContextCurrent(_window);
 
+    glEnable(GL_DEPTH_TEST);
+
 }
 
 void GLApp::render()
@@ -57,15 +58,33 @@ void GLApp::render()
     Texture texture("textures/dirt.png");
     Shaders shader("shaders/default.vs","shaders/default.fs");
     Model model("models/cube.obj");
-    std::vector<Mesh> &meshes = model.getMeshes();
 
+    const std::vector<Mesh> &meshes = model.getMeshes();
+    Renderable cubeInstance(meshes, &texture);
+    Renderable cubeInstance2(meshes, &texture);
+
+    Camera camera({1,0,5});
+
+    glm::mat4 view = camera.getViewMatrix();
+    glm::mat4 projection = camera.getProjectionMatrix();
+
+    
+    cubeInstance2.transform._translation = {1, 0, 0};
     while (!glfwWindowShouldClose(_window)){
         glfwPollEvents();
-        glClearColor(.2, .4, .6, 1);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClearColor(.2, .2, .3, 1);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         shader.use();
-        for (unsigned int i = 0 ; i <  meshes.size() ; i++)
-            meshes[i].draw();
+        // cubeInstance.transform._rotation = {glfwGetTime() * 20, glfwGetTime() * 20, 1};
+        shader.setMat4("projection", projection);
+        shader.setMat4("view", view);
+        shader.setMat4("model", cubeInstance.transform.getModelMatrix());
+        cubeInstance.draw();
+
+        shader.setMat4("projection", projection);
+        shader.setMat4("view", view);
+        shader.setMat4("model", cubeInstance2.transform.getModelMatrix());
+        cubeInstance2.draw();
         glfwSwapBuffers(_window);
     }
 }

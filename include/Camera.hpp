@@ -33,6 +33,8 @@ Camera::Camera(const glm::vec3 &position, float fov , float aspect, float near, 
     _worldUp = {0, 1, 0};
     _yaw = -90;
     _pitch = 0;
+
+    updateCamera();
 }
 
 void Camera::updateCamera(){
