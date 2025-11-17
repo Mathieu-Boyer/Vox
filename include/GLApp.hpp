@@ -6,6 +6,10 @@
 #include <string>
 #include "Shaders.hpp"
 #include "Texture.hpp"
+#include "Model.hpp"
+#include "Mesh.hpp"
+
+
 
 
 class GLApp
@@ -33,15 +37,6 @@ GLApp::GLApp(const int width, const int height,  const std::string &name) : _wid
 
 }
 
-float vertices[] = {
-    -0.4,-0.4,0.0,   0.0f, 0.0f,
-    -0.4,0.4,0.0,   0.0f, 1.0f,
-    0.4,0.4,0.0,     1.f, 1.0f,
-
-    -0.4,-0.4,0.0,   0.0f, 0.0f,
-    0.4,0.4,0.0,     1.f, 1.0f,
-    0.4,-0.4,0.0,    1.f, 0.f
-};
 
 void GLApp::init(){
     glfwInit();
@@ -59,32 +54,18 @@ void GLApp::init(){
 
 void GLApp::render()
 {
-    Shaders shader("shaders/default.vs","shaders/default.fs");
     Texture texture("textures/dirt.png");
-
-    // texture gen
-
-    GLuint VBO, VAO;
-
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    
-    glVertexAttribPointer(0, 3 , GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void *)0);
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 2 , GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void *)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    Shaders shader("shaders/default.vs","shaders/default.fs");
+    Model model("models/cube.obj");
+    std::vector<Mesh> &meshes = model.getMeshes();
 
     while (!glfwWindowShouldClose(_window)){
         glfwPollEvents();
         glClearColor(.2, .4, .6, 1);
         glClear(GL_COLOR_BUFFER_BIT);
         shader.use();
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        for (unsigned int i = 0 ; i <  meshes.size() ; i++)
+            meshes[i].draw();
         glfwSwapBuffers(_window);
     }
 }

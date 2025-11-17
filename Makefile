@@ -1,6 +1,6 @@
 CXX      := c++
-CXXFLAGS := -Wall -Wextra -Werror -std=c++23 -Iinclude -Iinclude/classes -I/opt/homebrew/include -MMD -MP -O3
-LDFLAGS  := -L/opt/homebrew/lib -lglfw -framework OpenGL
+CXXFLAGS := -Wall -Wextra -Werror -std=c++23 -Iinclude -Iinclude/classes -I/opt/homebrew/include  -MMD -MP -O3
+LDFLAGS  := -L/opt/homebrew/lib -lglfw -lassimp -framework OpenGL
 
 NAME     := vox
 
