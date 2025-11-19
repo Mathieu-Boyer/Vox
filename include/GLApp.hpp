@@ -11,6 +11,7 @@
 #include "Renderable.hpp"
 #include "Camera.hpp"
 #include "Chunk.hpp"
+#include "WorldManager.hpp"
 
 
 
@@ -41,44 +42,49 @@ void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods
     (void)mods;
     (void)scancode;
 
-    Camera *camera = static_cast<Camera*>(glfwGetWindowUserPointer(window));
+    WorldManager *worldManager = static_cast<WorldManager*>(glfwGetWindowUserPointer(window));
+
+    Camera &camera = worldManager->getCamera();
+
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
     if (key == GLFW_KEY_Q && (action == GLFW_PRESS || action == GLFW_REPEAT))
-        camera->moveFlags[0] = -.05;
+        camera.moveFlags[0] = -.05;
     if (key == GLFW_KEY_Q && action == GLFW_RELEASE)
-        camera->moveFlags[0] = 0;
+        camera.moveFlags[0] = 0;
     if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT))
-        camera->moveFlags[0] = +.05;
+        camera.moveFlags[0] = +.05;
     if (key == GLFW_KEY_D && action == GLFW_RELEASE)
-        camera->moveFlags[0] = 0;
+        camera.moveFlags[0] = 0;
 
     if (key == GLFW_KEY_SPACE && (action == GLFW_PRESS || action == GLFW_REPEAT))
-        camera->moveFlags[1] = +.05;
+        camera.moveFlags[1] = +.05;
     if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
-        camera->moveFlags[1] = 0;
+        camera.moveFlags[1] = 0;
     if (key == GLFW_KEY_LEFT_SHIFT && (action == GLFW_PRESS || action == GLFW_REPEAT))
-        camera->moveFlags[1] = -.05;
+        camera.moveFlags[1] = -.05;
     if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_RELEASE)
-        camera->moveFlags[1] = 0;
+        camera.moveFlags[1] = 0;
 
     if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT))
-        camera->moveFlags[2] = +.05;
+        camera.moveFlags[2] = +.05;
     if (key == GLFW_KEY_W && action == GLFW_RELEASE)
-        camera->moveFlags[2] = 0;
+        camera.moveFlags[2] = 0;
     if (key == GLFW_KEY_S && (action == GLFW_PRESS || action == GLFW_REPEAT))
-        camera->moveFlags[2] = -.05;
+        camera.moveFlags[2] = -.05;
     if (key == GLFW_KEY_S && action == GLFW_RELEASE)
-        camera->moveFlags[2] = 0;
+        camera.moveFlags[2] = 0;
 
+    worldManager->loadChunks();
 }
 
 
 void cursorCallBack(GLFWwindow* window, double xpos, double ypos){
-    Camera *camera = static_cast<Camera*>(glfwGetWindowUserPointer(window));
-    camera->setNewCursorPosition(xpos, ypos);
-    camera->updateRotation();
+    WorldManager *worldManager = static_cast<WorldManager*>(glfwGetWindowUserPointer(window));
+    Camera &camera = worldManager->getCamera();
+    camera.setNewCursorPosition(xpos, ypos);
+    camera.updateRotation();
 }
 
 void GLApp::init(){
@@ -104,29 +110,30 @@ void GLApp::init(){
 
 void GLApp::render()
 {
-    Texture texture("textures/dirt.png");
 
-    Shaders shader("shaders/default.vs","shaders/default.fs");
-    Model model("models/cube.obj");
+    // Shaders shader("shaders/default.vs","shaders/default.fs");
 
-    const std::vector<Mesh> &meshes = model.getMeshes();
+
+    // (void)meshes;
     // Renderable cubeInstance(meshes, &texture);
     // Renderable cubeInstance2(meshes, &texture);
 
-    Camera camera({0,0,50});
-    glfwSetWindowUserPointer(_window, &camera);
+    // Camera camera({0,0,50});
+    // glfwSetWindowUserPointer(_window, &camera); // 
+
+    WorldManager worldManager;
+
+    glfwSetWindowUserPointer(_window, &worldManager); // 
 
     // cubeInstance2.transform._translation = {1, 0, 0};
     // Chunk chunk0(0, 0, 0,shader, camera, meshes, texture);
 
-    Chunk chunk1(0, 0, 0,shader, camera, meshes, texture);
-    Chunk chunk2(1, 0, 0,shader, camera, meshes, texture);
-    Chunk chunk3(2, 0, 0,shader, camera, meshes, texture);
+    // Chunk chunk1(0, 0, 0,shader, camera, meshes, texture);
+    // Chunk chunk2(1, 0, 0,shader, camera, meshes, texture);
+    // Chunk chunk3(2, 0, 0,shader, camera, meshes, texture);
     while (!glfwWindowShouldClose(_window)){
 
-        camera.updatePosition();
-        // glm::mat4 view = camera.getViewMatrix();
-        // glm::mat4 projection = camera.getProjectionMatrix();
+
 
         
         glfwPollEvents();
@@ -134,10 +141,10 @@ void GLApp::render()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // chunk0.drawChunk();
 
-        chunk1.drawChunk();
-        chunk2.drawChunk();
-        chunk3.drawChunk();
-
+        // chunk1.drawChunk();
+        // chunk2.drawChunk();
+        // chunk3.drawChunk();
+        worldManager.draw();
         // chunk1.drawChunk(shader);
         // shader.use();
         // cubeInstance.transform._rotation = {glfwGetTime() * 20, glfwGetTime() * 20, 1};

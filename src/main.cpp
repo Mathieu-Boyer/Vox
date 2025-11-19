@@ -5,7 +5,7 @@ int main (){
 
     try {
 
-        GLApp app(1980, 1080, "Vox");
+        GLApp app(1920, 1080, "Vox");
 
         app.render();
     }catch (const std::exception &err){

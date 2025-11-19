@@ -1,8 +1,8 @@
 #pragma once
 
-#define AIR 0
-#define DIRT 1
-#define STONE 2
+#define AIR -1
+#define DIRT 0
+#define STONE 1
 
 struct Block
 {

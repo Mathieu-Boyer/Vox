@@ -23,7 +23,7 @@ private:
 
     GLint getLocation(const std::string &location);
 public:
-    Shaders(const std::string &vertexPath , const std::string &fragmentPath);
+    Shaders(const char *vertexPath , const char *fragmentPath);
     ~Shaders();
 
     GLuint getProgramId();
@@ -36,7 +36,7 @@ public:
     void use();
 };
 
-Shaders::Shaders(const std::string &vertexPath , const std::string &fragmentPath)
+Shaders::Shaders(const char *vertexPath , const char *fragmentPath)
 {
     std::string vertexSource = loadFile(vertexPath);
     std::string fragmantSource = loadFile(fragmentPath);

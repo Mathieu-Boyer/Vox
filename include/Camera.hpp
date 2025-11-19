@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include <array>
@@ -23,7 +23,7 @@ private:
     float lastY;
 
 public:
-    Camera(const glm::vec3 &position, float fov = 80, float aspect = 2, float near = 0.1, float far = 100);
+    Camera(const glm::vec3 &position, float fov = 80, float aspect = 1920/1080, float near = 0.1, float far = 160);
     ~Camera();
 
     void setPosition(const glm::vec3 &position);
