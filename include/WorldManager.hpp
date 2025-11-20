@@ -6,7 +6,7 @@
 #include "Camera.hpp"
 #include "Model.hpp"
 
-#define MAX_RENDER 3
+#define MAX_RENDER 5
 
 class WorldManager
 {
