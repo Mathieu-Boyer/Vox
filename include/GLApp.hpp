@@ -110,53 +110,14 @@ void GLApp::init(){
 
 void GLApp::render()
 {
-
-    // Shaders shader("shaders/default.vs","shaders/default.fs");
-
-
-    // (void)meshes;
-    // Renderable cubeInstance(meshes, &texture);
-    // Renderable cubeInstance2(meshes, &texture);
-
-    // Camera camera({0,0,50});
-    // glfwSetWindowUserPointer(_window, &camera); // 
-
     WorldManager worldManager;
-
-    glfwSetWindowUserPointer(_window, &worldManager); // 
-
-    // cubeInstance2.transform._translation = {1, 0, 0};
-    // Chunk chunk0(0, 0, 0,shader, camera, meshes, texture);
-
-    // Chunk chunk1(0, 0, 0,shader, camera, meshes, texture);
-    // Chunk chunk2(1, 0, 0,shader, camera, meshes, texture);
-    // Chunk chunk3(2, 0, 0,shader, camera, meshes, texture);
+    glfwSetWindowUserPointer(_window, &worldManager);
     while (!glfwWindowShouldClose(_window)){
-
-
-
-        
         glfwPollEvents();
         glClearColor(.2, .2, .3, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        // chunk0.drawChunk();
 
-        // chunk1.drawChunk();
-        // chunk2.drawChunk();
-        // chunk3.drawChunk();
         worldManager.draw();
-        // chunk1.drawChunk(shader);
-        // shader.use();
-        // cubeInstance.transform._rotation = {glfwGetTime() * 20, glfwGetTime() * 20, 1};
-        // shader.setMat4("projection", projection);
-        // shader.setMat4("view", view);
-        // shader.setMat4("model", cubeInstance.transform.getModelMatrix());
-        // cubeInstance.draw();
-
-        // shader.setMat4("projection", projection);
-        // shader.setMat4("view", view);
-        // shader.setMat4("model", cubeInstance2.transform.getModelMatrix());
-        // cubeInstance2.draw();
         glfwSwapBuffers(_window);
     }
 }

@@ -15,7 +15,7 @@ private:
     std::array<Chunk*, MAX_RENDER> loadedChunks;
     Shaders shader;
     Camera camera;
-    const std::array<Texture, 1> textures;
+    const std::array<Texture, 2> textures;
     Model cubeModel;
     const std::vector<Mesh> &cubeMeshes;
     void drawChunk(Chunk *chunk);
@@ -38,14 +38,14 @@ void WorldManager::loadChunks(){
         auto it = world.find(toLoad) ;
         if (it != world.end())
             loadedChunks[i + MAX_RENDER/2] = &it->second;
-        else 
+        else
             loadedChunks[i + MAX_RENDER/2] = nullptr;
     }
 }
 
 WorldManager::WorldManager(/* args */) : 
     shader("shaders/default.vs", "shaders/default.fs"), camera({0,0,50}), 
-    textures({Texture("textures/dirt.png")}),
+    textures({Texture("textures/dirt.png"), Texture("textures/stone.png")}),
     cubeModel("models/cube.obj"), cubeMeshes(cubeModel.getMeshes())
 {
 
@@ -71,6 +71,8 @@ void WorldManager::drawChunk(Chunk *chunk){
     for (unsigned int i = 0; i < CHUNK_SIZE; i++)
         for (unsigned int j = 0; j < CHUNK_SIZE; j++)
             for (unsigned int k = 0; k < CHUNK_SIZE; k++){
+                if (data[i][j][k] == AIR)
+                    continue;
                 Renderable cubeInstance(cubeMeshes, &textures[data[i][j][k]]);
                 cubeInstance.transform._translation = {
                     coordinates[0] * CHUNK_SIZE + i,

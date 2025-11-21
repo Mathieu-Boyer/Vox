@@ -34,7 +34,7 @@ Chunk::Chunk(int x, int y, int z) : x(x),y(y),z(z)
     for (unsigned int i = 0; i < CHUNK_SIZE; i++)
         for (unsigned int j = 0; j < CHUNK_SIZE; j++)
             for (unsigned int k = 0; k < CHUNK_SIZE; k++)
-                _data[i][j][k] = DIRT;
+                _data[i][j][k] = AIR + i % 3;
 }
 
 const std::array<int , 3> Chunk::getCoordinates() const{
