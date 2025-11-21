@@ -50,7 +50,7 @@ WorldManager::WorldManager(/* args */) :
 {
 
 
-    for (int i = 0 - (MAX_RENDER / 2); i < 20; i++)
+    for (int i = 0 - (MAX_RENDER / 2); i < 1; i++)
         world[(std::array<int, 3>){(int)i, 0, 0}] = Chunk((int)i, 0, 0);
     loadChunks();
 }
