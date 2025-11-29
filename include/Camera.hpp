@@ -23,7 +23,7 @@ private:
     float lastY;
 
 public:
-    Camera(const glm::vec3 &position, float fov = 80, float aspect = 1920/1080, float near = 0.1, float far = 160);
+    Camera(const glm::vec3 &position, float fov = 80, float aspect = 1920/1080, float near = 0.1, float far = 1000);
     ~Camera();
 
     void setPosition(const glm::vec3 &position);

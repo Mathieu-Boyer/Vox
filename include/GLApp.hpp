@@ -85,7 +85,6 @@ void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods
     if (key == GLFW_KEY_S && action == GLFW_RELEASE)
         camera.moveFlags[2] = 0;
 
-    worldManager->loadChunks();
 }
 
 
@@ -124,8 +123,10 @@ void GLApp::render()
     // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     while (!glfwWindowShouldClose(_window)){
         glfwPollEvents();
-        glClearColor(.2, .2, .3, 1);
+        glClearColor(.2, .1, .2, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        worldManager.loadChunks();
+        
 
         worldManager.draw();
         glfwSwapBuffers(_window);

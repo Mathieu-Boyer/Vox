@@ -12,7 +12,9 @@
 class Chunk
 {
 private:
-    int x,y,z;
+    int x = 0;
+    int y = 0;
+    int z = 0;
     std::array<std::array<std::array<int, CHUNK_SIZE>, CHUNK_SIZE>, CHUNK_SIZE> _data;
     void buildCubeVertices(std::vector<Vertex> &vertices, std::array<float , 3> &blockPosition);
 public:
@@ -38,10 +40,11 @@ Chunk::Chunk(int x, int y, int z) : x(x),y(y),z(z)
     for (unsigned int i = 0; i < CHUNK_SIZE; i++)
         for (unsigned int j = 0; j < CHUNK_SIZE; j++)
             for (unsigned int k = 0; k < CHUNK_SIZE; k++)
-                _data[i][j][k] = DIRT;
+                _data[i][j][k] = y == 1 ? AIR : DIRT;
 }
 
 const std::array<int , 3> Chunk::getCoordinates() const{
+    // std::cout << x <<y <<z << "\n";
     return {x,y,z};
 }
 
@@ -99,7 +102,10 @@ Mesh Chunk::toMesh(){
     for (unsigned int i = 0; i < CHUNK_SIZE; i++)
         for (unsigned int j = 0; j < CHUNK_SIZE; j++)
             for (unsigned int k = 0; k < CHUNK_SIZE; k++){
-                std::array<float , 3> blockPosition = {(float)x * CHUNK_SIZE + i, (float)y * CHUNK_SIZE + j,(float)z * CHUNK_SIZE + k};
+                // std::cout << i << " " << j << " " << k << "\n" ;
+                if (((i > 0 && i < 15) && (j > 0 && j < 15) && (k > 0 && k < 15)) || _data[i][j][k] == AIR)
+                    continue;
+                std::array<float , 3> blockPosition = {(float)x * CHUNK_SIZE + i,(float)y * CHUNK_SIZE +  j,(float) z * CHUNK_SIZE + k};
                 buildCubeVertices(vertices, blockPosition);
             }
 
