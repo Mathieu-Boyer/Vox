@@ -121,7 +121,7 @@ void GLApp::render()
 {
     WorldManager worldManager;
     glfwSetWindowUserPointer(_window, &worldManager);
-    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     while (!glfwWindowShouldClose(_window)){
         glfwPollEvents();
         glClearColor(.2, .2, .3, 1);

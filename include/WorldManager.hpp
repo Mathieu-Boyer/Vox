@@ -6,7 +6,7 @@
 #include "Camera.hpp"
 #include "Model.hpp"
 
-#define MAX_RENDER 5
+#define MAX_RENDER 10
 
 class WorldManager
 {
@@ -32,7 +32,7 @@ public:
 
 void WorldManager::loadChunks(){
     std::array<int, 3> coordinates = {(int)camera.getPosition().x / CHUNK_SIZE,  0, 0};
-    for (int i = 0 - (MAX_RENDER / 2); i <= MAX_RENDER/2; i++){
+    for (int i = 0 - (MAX_RENDER / 2); i < MAX_RENDER/2; i++){
         std::array<int, 3> toLoad(coordinates);
         toLoad[0] += i;
         auto it = world.find(toLoad) ;
@@ -50,7 +50,7 @@ WorldManager::WorldManager(/* args */) :
 {
 
 
-    for (int i = 0 - (MAX_RENDER / 2); i < 1; i++)
+    for (int i = -20; i < 20; i++)
         world[(std::array<int, 3>){(int)i, 0, 0}] = Chunk((int)i, 0, 0);
     loadChunks();
 }
@@ -58,6 +58,7 @@ WorldManager::WorldManager(/* args */) :
 Camera &WorldManager::getCamera(){
     return camera;
 }
+
 const Camera &WorldManager::getCamera() const{
     return camera;
 }
@@ -65,26 +66,36 @@ const Camera &WorldManager::getCamera() const{
 
 void WorldManager::drawChunk(Chunk *chunk){
     shader.use();
-    const auto &data = chunk->getData();
-    const auto &coordinates = chunk->getCoordinates();
+    // const auto &data = chunk->getData();
+    // const auto &coordinates = chunk->getCoordinates();
 
-    for (unsigned int i = 0; i < CHUNK_SIZE; i++)
-        for (unsigned int j = 0; j < CHUNK_SIZE; j++)
-            for (unsigned int k = 0; k < CHUNK_SIZE; k++){
-                if (data[i][j][k] == AIR)
-                    continue;
-                Renderable cubeInstance(cubeMeshes, &textures[data[i][j][k]]);
-                cubeInstance.transform._translation = {
-                    coordinates[0] * CHUNK_SIZE + i,
-                    coordinates[1] * CHUNK_SIZE + j,
-                    coordinates[2] * CHUNK_SIZE + k
-                };
+    // for (unsigned int i = 0; i < CHUNK_SIZE; i++)
+    //     for (unsigned int j = 0; j < CHUNK_SIZE; j++)
+    //         for (unsigned int k = 0; k < CHUNK_SIZE; k++){
+    //             if (data[i][j][k] == AIR)
+    //                 continue;
+    //             Renderable cubeInstance(cubeMeshes, &textures[data[i][j][k]]);
+    //             cubeInstance.transform._translation = {
+    //                 coordinates[0] * CHUNK_SIZE + i,
+    //                 coordinates[1] * CHUNK_SIZE + j,
+    //                 coordinates[2] * CHUNK_SIZE + k
+    //             };
 
-                shader.setMat4("projection", camera.getProjectionMatrix());
-                shader.setMat4("view", camera.getViewMatrix());
-                shader.setMat4("model", cubeInstance.transform.getModelMatrix());
-                cubeInstance.draw();
-            }
+    //             shader.setMat4("projection", camera.getProjectionMatrix());
+    //             shader.setMat4("view", camera.getViewMatrix());
+    //             shader.setMat4("model", cubeInstance.transform.getModelMatrix());
+    //             cubeInstance.draw();
+    //         }
+
+
+    Mesh chunkMesh = chunk->toMesh();
+    Renderable chunkInstance(chunkMesh, &textures[0]);
+
+    shader.setMat4("projection", camera.getProjectionMatrix());
+    shader.setMat4("view", camera.getViewMatrix());
+    shader.setMat4("model", chunkInstance.transform.getModelMatrix());
+    chunkInstance.draw();
+    
 }
 
 void WorldManager::draw(){

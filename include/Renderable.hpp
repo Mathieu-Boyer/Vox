@@ -7,24 +7,25 @@
 class Renderable
 {
 private:
-    const std::vector<Mesh> &_meshes;
+    const Mesh &_mesh;
     const Texture *_texture;
 
 public:
-    Renderable(const std::vector<Mesh> &meshes, const Texture *texture);
+    Renderable(Mesh &mesh, const Texture *texture);
     ~Renderable();
     void draw();
     Transform transform;
 };
 
-Renderable::Renderable(const std::vector<Mesh> &meshes, const Texture *texture) : _meshes(meshes), _texture(texture){
+Renderable::Renderable(Mesh &mesh, const Texture *texture) : _mesh(mesh), _texture(texture){
 }
 
 void Renderable::draw(){
     if (_texture)
         _texture->bind();
-    for (unsigned int i = 0 ; i <  _meshes.size() ; i++)
-        _meshes[i].draw();
+    // for (unsigned int i = 0 ; i <  _meshes.size() ; i++)
+        // _meshes[i].draw();
+    _mesh.draw();
 }
 
 Renderable::~Renderable()
