@@ -122,19 +122,40 @@ void GLApp::init(){
 
 }
 
+
 void GLApp::render()
 {
+double lastTime = 0.0;
+int frameCount = 0;
+double fps = 0.0;
     WorldManager worldManager;
     glfwSetWindowUserPointer(_window, &worldManager);
     // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     // unsigned int i = 0;
+            // worldManager.loadChunks();
     while (!glfwWindowShouldClose(_window)){
         glfwPollEvents();
         glClearColor(.2, .1, .2, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        worldManager.loadChunks();
+        // worldManager.loadChunks();
         
         // i++;
+
+
+// Inside your main loop (every frame):
+double currentTime = glfwGetTime(); // or whatever timer you're using
+frameCount++;
+
+if (currentTime - lastTime >= 1.0) { // Every second
+    fps = frameCount / (currentTime - lastTime);
+    
+    std::cout << "FPS: " << fps << std::endl;
+    
+    frameCount = 0;
+    lastTime = currentTime;
+}
+
+        
 
         worldManager.draw();
         glfwSwapBuffers(_window);

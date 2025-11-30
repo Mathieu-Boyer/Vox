@@ -5,20 +5,22 @@
 #include "Shaders.hpp"
 #include "Camera.hpp"
 #include "Model.hpp"
+#include <chrono>
 
-#define MAX_RENDER 6
+
+#define MAX_RENDER 15
 
 class WorldManager
 {
 private:
     std::map<std::array<int, 3>, Chunk> world;
-    std::array<std::array<std::array<Chunk*, MAX_RENDER> , MAX_RENDER>, MAX_RENDER > loadedChunks;
+    std::array<std::array<std::array<std::pair<std::unique_ptr<Mesh>, Chunk*> , MAX_RENDER> , MAX_RENDER>, MAX_RENDER > loadedChunks;
     Shaders shader;
     Camera camera;
     const std::array<Texture, 2> textures;
     Model cubeModel;
     const std::vector<Mesh> &cubeMeshes;
-    void drawChunk(Chunk *chunk);
+    void drawChunk(Mesh *mesh, Chunk &chunk);
 
 
 public:
@@ -40,10 +42,12 @@ void WorldManager::loadChunks(){
                 toLoad[1] += j;
                 toLoad[2] += k;
                 auto it = world.find(toLoad) ;
-                if (it != world.end())
-                    loadedChunks[i + MAX_RENDER/2][j + MAX_RENDER/2][k + MAX_RENDER/2] = &it->second;
+                if (it != world.end()){
+                    loadedChunks[i + MAX_RENDER/2][j + MAX_RENDER/2][k + MAX_RENDER/2].first = it->second.toMesh();
+                    loadedChunks[i + MAX_RENDER/2][j + MAX_RENDER/2][k + MAX_RENDER/2].second = &it->second;
+                }
                 else
-                    loadedChunks[i + MAX_RENDER/2][j + MAX_RENDER/2][k + MAX_RENDER/2] = nullptr;
+                    loadedChunks[i + MAX_RENDER/2][j + MAX_RENDER/2][k + MAX_RENDER/2].second = nullptr;
             }
 }
 
@@ -53,9 +57,9 @@ WorldManager::WorldManager(/* args */) :
     cubeModel("models/cube.obj"), cubeMeshes(cubeModel.getMeshes())
 {
 
-    for (int i = -20; i < 20; i++)
-        for (int j = -20; j < 20; j++)
-            for (int k = -20; k < 20; k++)
+    for (int i = -25; i < 25; i++)
+        for (int j = -25; j < 25; j++)
+            for (int k = -25; k < 25; k++)
                 world[(std::array<int, 3>){i, j, k}] = Chunk(i, j, k);
     loadChunks();
 }
@@ -69,41 +73,17 @@ const Camera &WorldManager::getCamera() const{
 }
 
 
-void WorldManager::drawChunk(Chunk *chunk){
+void WorldManager::drawChunk(Mesh *mesh, Chunk &chunk){
     shader.use();
-    // const auto &data = chunk->getData();
-    const auto coordinates = chunk->getCoordinates();
-
-    // for (unsigned int i = 0; i < CHUNK_SIZE; i++)
-    //     for (unsigned int j = 0; j < CHUNK_SIZE; j++)
-    //         for (unsigned int k = 0; k < CHUNK_SIZE; k++){
-    //             if (data[i][j][k] == AIR)
-    //                 continue;
-    //             Renderable cubeInstance(cubeMeshes, &textures[data[i][j][k]]);
-    //             cubeInstance.transform._translation = {
-    //                 coordinates[0] * CHUNK_SIZE + i,
-    //                 coordinates[1] * CHUNK_SIZE + j,
-    //                 coordinates[2] * CHUNK_SIZE + k
-    //             };
-
-    //             shader.setMat4("projection", camera.getProjectionMatrix());
-    //             shader.setMat4("view", camera.getViewMatrix());
-    //             shader.setMat4("model", cubeInstance.transform.getModelMatrix());
-    //             cubeInstance.draw();
-    //         }
-
-
-    Mesh chunkMesh = chunk->toMesh();
-    Renderable chunkInstance(chunkMesh, &textures[0]);
-
-
+    const auto coordinates = chunk.getCoordinates();
+    Renderable chunkInstance(*mesh, &textures[0]);
 
      chunkInstance.transform._translation = {
                     coordinates[0] * CHUNK_SIZE,
                     coordinates[1] * CHUNK_SIZE,
                     coordinates[2] * CHUNK_SIZE
     };
-    // chunkInstance.transform._translation = chunk->getCoordinates();
+
     shader.setMat4("projection", camera.getProjectionMatrix());
     shader.setMat4("view", camera.getViewMatrix());
     shader.setMat4("model", chunkInstance.transform.getModelMatrix());
@@ -117,8 +97,8 @@ void WorldManager::draw(){
     for (unsigned int i = 0 ; i < MAX_RENDER; i++)
         for (unsigned int j = 0 ; j < MAX_RENDER; j++)
             for (unsigned int k = 0 ; k < MAX_RENDER; k++)
-                if (loadedChunks[i][j][k] != nullptr){
-                    drawChunk(loadedChunks[i][j][k]);
+                if (loadedChunks[i][j][k].second != nullptr){
+                    drawChunk(loadedChunks[i][j][k].first.get(), *loadedChunks[i][j][k].second);
             }
 
 

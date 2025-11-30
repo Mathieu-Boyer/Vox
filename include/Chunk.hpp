@@ -9,6 +9,8 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include <array>
+#include <memory>
+#include <chrono>
 
 
 
@@ -62,7 +64,7 @@ public:
     const std::array<int , 3>  getCoordinates() const;
     std::array<std::array<std::array<int, CHUNK_SIZE>, CHUNK_SIZE>, CHUNK_SIZE> getData() const;
     int getBlockAt(int x, int y , int z);
-    Mesh toMesh();
+    std::unique_ptr<Mesh> toMesh();
     ~Chunk();
 };
 
@@ -138,7 +140,9 @@ int Chunk::getBlockAt(int x, int y , int z){
 }
 
 
-Mesh Chunk::toMesh(){
+std::unique_ptr<Mesh> Chunk::toMesh(){
+    auto t1 = std::chrono::high_resolution_clock::now();
+    
     std::vector<Vertex> vertices;
     for (unsigned int i = 0; i < CHUNK_SIZE; i++)
         for (unsigned int j = 0; j < CHUNK_SIZE; j++)
@@ -150,7 +154,12 @@ Mesh Chunk::toMesh(){
                 buildCubeVertices(vertices, blockPosition);
             }
 
-    return Mesh(vertices);
+    auto t2 = std::chrono::high_resolution_clock::now();
+
+    auto cpu_time = std::chrono::duration<double, std::milli>(t2 - t1).count();
+
+    std::cout << "CPU: " << cpu_time << "ms\n";
+    return std::make_unique<Mesh>(vertices);
 }
 
 Chunk::~Chunk()
