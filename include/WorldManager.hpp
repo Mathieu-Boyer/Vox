@@ -72,7 +72,7 @@ const Camera &WorldManager::getCamera() const{
 void WorldManager::drawChunk(Chunk *chunk){
     shader.use();
     // const auto &data = chunk->getData();
-    // const auto coordinates = chunk->getCoordinates();
+    const auto coordinates = chunk->getCoordinates();
 
     // for (unsigned int i = 0; i < CHUNK_SIZE; i++)
     //     for (unsigned int j = 0; j < CHUNK_SIZE; j++)
@@ -98,11 +98,11 @@ void WorldManager::drawChunk(Chunk *chunk){
 
 
 
-    //  chunkInstance.transform._translation = {
-    //                 coordinates[0] * CHUNK_SIZE,
-    //                 coordinates[1] * CHUNK_SIZE,
-    //                 coordinates[2] * CHUNK_SIZE
-    // };
+     chunkInstance.transform._translation = {
+                    coordinates[0] * CHUNK_SIZE,
+                    coordinates[1] * CHUNK_SIZE,
+                    coordinates[2] * CHUNK_SIZE
+    };
     // chunkInstance.transform._translation = chunk->getCoordinates();
     shader.setMat4("projection", camera.getProjectionMatrix());
     shader.setMat4("view", camera.getViewMatrix());

@@ -96,7 +96,8 @@ void cursorCallBack(GLFWwindow* window, double xpos, double ypos){
 }
 
 void GLApp::init(){
-    glfwInit();
+    if (!glfwInit())
+        throw std::runtime_error("glfwInit failed");
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -105,8 +106,13 @@ void GLApp::init(){
 
     if (!_window)
         throw std::runtime_error("Window couldn't be oppened.");
-    glfwMakeContextCurrent(_window);
 
+    glfwMakeContextCurrent(_window);
+    if (glfwGetCurrentContext() == nullptr)
+        throw std::runtime_error("Failed to create OpenGL context");
+
+
+    std::cout << "GL version: " << glGetString(GL_VERSION) << "\n";
     glEnable(GL_DEPTH_TEST);
 
     glfwSetKeyCallback(_window, keyCallBack);
@@ -121,21 +127,26 @@ void GLApp::render()
     WorldManager worldManager;
     glfwSetWindowUserPointer(_window, &worldManager);
     // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    // unsigned int i = 0;
     while (!glfwWindowShouldClose(_window)){
         glfwPollEvents();
         glClearColor(.2, .1, .2, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         worldManager.loadChunks();
         
+        // i++;
 
         worldManager.draw();
         glfwSwapBuffers(_window);
     }
+
 }
 
 GLApp::~GLApp()
 {
-    if (_window != nullptr)
+    if (_window != nullptr){
+        glfwMakeContextCurrent(NULL);
         glfwDestroyWindow(_window);
+    }
     glfwTerminate();
 }

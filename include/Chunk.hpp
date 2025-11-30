@@ -9,6 +9,45 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include <array>
+
+
+
+constexpr std::array<glm::vec2, 4> textureCoords = {{
+    glm::vec2(0.0f, 0.0f),
+    glm::vec2(1.0f, 0.0f),
+    glm::vec2(1.0f, 1.0f),
+    glm::vec2(0.0f, 1.0f) 
+}};
+
+constexpr std::array<std::array<std::array<int, 2>, 3>, 12> triangles = {{
+    // front
+    {{{0,0}, {1,1}, {2,2}}},
+    {{{0,0}, {2,2}, {3,3}}},
+    
+    // back
+    {{{4,0}, {6,2}, {5,1}}},
+    {{{4,0}, {7,3}, {6,2}}},
+
+    // down
+    {{{0,0}, {5,2}, {1,1}}},
+    {{{0,0}, {4,3}, {5,2}}},
+
+    // up
+    {{{3,0}, {2,1}, {6,2}}},
+    {{{3,0}, {6,2}, {7,3}}},
+
+    // left 
+    {{{0,0}, {3,3}, {7,2}}},
+    {{{0,0}, {7,2}, {4,1}}},
+
+    // right
+    {{{1,0}, {5,1}, {6,2}}},
+    {{{1,0}, {6,2}, {2,3}}}
+
+
+}};
+
+
 class Chunk
 {
 private:
@@ -22,7 +61,7 @@ public:
     Chunk(int x, int y, int z);
     const std::array<int , 3>  getCoordinates() const;
     std::array<std::array<std::array<int, CHUNK_SIZE>, CHUNK_SIZE>, CHUNK_SIZE> getData() const;
-
+    int getBlockAt(int x, int y , int z);
     Mesh toMesh();
     ~Chunk();
 };
@@ -54,46 +93,46 @@ std::array<std::array<std::array<int, CHUNK_SIZE>, CHUNK_SIZE>, CHUNK_SIZE> Chun
 
 void Chunk::buildCubeVertices(std::vector<Vertex> &vertices, std::array<float, 3> &block){
     std::array<glm::vec3, 8> blockVertices = {{
+
         glm::vec3(block[0]     , block[1]     , block[2]),    
         glm::vec3(block[0] + 1 , block[1]     , block[2]),    
         glm::vec3(block[0] + 1 , block[1] + 1 , block[2]),    
-        glm::vec3(block[0]     , block[1] + 1 , block[2]),    
+        glm::vec3(block[0]     , block[1] + 1 , block[2]),
         glm::vec3(block[0]     , block[1]     , block[2] + 1),
         glm::vec3(block[0] + 1 , block[1]     , block[2] + 1),
         glm::vec3(block[0] + 1 , block[1] + 1 , block[2] + 1),
-        glm::vec3(block[0]     , block[1] + 1 , block[2] + 1) 
+        glm::vec3(block[0]     , block[1] + 1 , block[2] + 1)
     }};
     
-    std::array<glm::vec2, 4> textureCoords = {{
-        glm::vec2(0.0f, 0.0f),
-        glm::vec2(1.0f, 0.0f),
-        glm::vec2(1.0f, 1.0f),
-        glm::vec2(0.0f, 1.0f) 
-    }};
-    
-    std::array<std::array<std::array<int, 2>, 3>, 12> triangles = {{
-        {{{0,0}, {1,1}, {2,2}}},
-        {{{0,0}, {2,2}, {3,3}}},
-        {{{4,0}, {6,2}, {5,1}}},
-        {{{4,0}, {7,3}, {6,2}}},
-        {{{0,0}, {5,2}, {1,1}}},
-        {{{0,0}, {4,3}, {5,2}}},
-        {{{3,0}, {2,1}, {6,2}}},
-        {{{3,0}, {6,2}, {7,3}}},
-        {{{1,0}, {5,1}, {6,2}}},
-        {{{1,0}, {6,2}, {2,3}}},
-        {{{0,0}, {3,3}, {7,2}}},
-        {{{0,0}, {7,2}, {4,1}}}
-    }};
-    
-    for (const auto& triangle : triangles) {
-        for (int i = 0; i < 3; i++) {
+
+    unsigned int i = 0;
+    while (i < triangles.size()) {
+
+        if ((i < 2 && block[2] > 0 && getBlockAt(block[0], block[1], block[2] - 1) != AIR) || 
+        (i >=  2 && i < 4 && block[2] < CHUNK_SIZE - 1 && getBlockAt(block[0], block[1], block[2] + 1) != AIR) || 
+        (i >=  4 && i < 6 && block[1] > 0 && getBlockAt(block[0], block[1] - 1, block[2]) != AIR) || 
+        (i >=  6 && i < 8 && block[1] < CHUNK_SIZE - 1 && getBlockAt(block[0], block[1] + 1, block[2]) != AIR) || 
+        (i >=  8 && i < 10 && block[0] > 0 && getBlockAt(block[0] - 1, block[1], block[2]) != AIR) ||
+        (i >= 10 && i < 12 && block[0] < CHUNK_SIZE - 1 && getBlockAt(block[0] + 1, block[1], block[2]) != AIR)) {
+            i+=2;
+            continue;
+        }
+
+    for (int tri = 0; tri < 2; tri++) {  // Process 2 triangles per face
+        for (int j = 0; j < 3; j++) {
             Vertex vertex;
-            vertex.position = blockVertices[triangle[i][0]];
-            vertex.textureCoordinates = textureCoords[triangle[i][1]];
+            vertex.position = blockVertices[triangles[i][j][0]];
+            vertex.textureCoordinates = textureCoords[triangles[i][j][1]];
             vertices.push_back(vertex);
         }
+        i++;
     }
+    }
+}
+
+
+int Chunk::getBlockAt(int x, int y , int z){
+    return _data[x][y][z];
 }
 
 
@@ -103,9 +142,9 @@ Mesh Chunk::toMesh(){
         for (unsigned int j = 0; j < CHUNK_SIZE; j++)
             for (unsigned int k = 0; k < CHUNK_SIZE; k++){
                 // std::cout << i << " " << j << " " << k << "\n" ;
-                if (((i > 0 && i < 15) && (j > 0 && j < 15) && (k > 0 && k < 15)) || _data[i][j][k] == AIR)
+                if ( _data[i][j][k] == AIR)
                     continue;
-                std::array<float , 3> blockPosition = {(float)x * CHUNK_SIZE + i,(float)y * CHUNK_SIZE +  j,(float) z * CHUNK_SIZE + k};
+                std::array<float , 3> blockPosition = {(float)i,(float)j,(float)k};
                 buildCubeVertices(vertices, blockPosition);
             }
 
