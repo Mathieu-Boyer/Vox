@@ -6,7 +6,7 @@
 #include "Camera.hpp"
 #include "Model.hpp"
 
-#define MAX_RENDER 4
+#define MAX_RENDER 6
 
 class WorldManager
 {
@@ -32,9 +32,9 @@ public:
 
 void WorldManager::loadChunks(){
     std::array<int, 3> coordinates = {(int)(camera.getPosition().x / CHUNK_SIZE),  (int)(camera.getPosition().y / CHUNK_SIZE), (int)(camera.getPosition().z / CHUNK_SIZE)};
-    for (int i = 0 - (MAX_RENDER / 2); i < (MAX_RENDER/2 + i%2); i++)
-        for (int j = 0 - (MAX_RENDER / 2); j < (MAX_RENDER/2 + j%2); j++)
-            for (int k = 0 - (MAX_RENDER / 2); k < (MAX_RENDER/2 + k%2); k++){
+    for (int i = 0 - (MAX_RENDER / 2); i < (MAX_RENDER/2 + MAX_RENDER%2); i++)
+        for (int j = 0 - (MAX_RENDER / 2); j < (MAX_RENDER/2 + MAX_RENDER%2); j++)
+            for (int k = 0 - (MAX_RENDER / 2); k < (MAX_RENDER/2 + MAX_RENDER%2); k++){
                 std::array<int, 3> toLoad(coordinates);
                 toLoad[0] += i;
                 toLoad[1] += j;

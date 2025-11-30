@@ -78,8 +78,10 @@ Chunk::Chunk(int x, int y, int z) : x(x),y(y),z(z)
 {
     for (unsigned int i = 0; i < CHUNK_SIZE; i++)
         for (unsigned int j = 0; j < CHUNK_SIZE; j++)
-            for (unsigned int k = 0; k < CHUNK_SIZE; k++)
-                _data[i][j][k] = y == 1 ? AIR : DIRT;
+            for (unsigned int k = 0; k < CHUNK_SIZE; k++){
+                    _data[i][j][k] = y == 1 ? AIR : DIRT;
+            }
+    
 }
 
 const std::array<int , 3> Chunk::getCoordinates() const{
