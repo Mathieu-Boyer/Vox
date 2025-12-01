@@ -12,6 +12,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include <vector>
+#include <chrono>
 struct Vertex
 {
     glm::vec3 position;
@@ -73,6 +74,8 @@ void Mesh::draw() const{
 }
 
 void Mesh::setup(){
+
+    auto t1 = std::chrono::high_resolution_clock::now();
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
 
@@ -89,6 +92,13 @@ void Mesh::setup(){
     
     glVertexAttribPointer(2, 3 , GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, normal));
     glEnableVertexAttribArray(2);
+    auto t2 = std::chrono::high_resolution_clock::now();
+
+
+    auto gpu_time = std::chrono::duration<double, std::milli>(t2 - t1).count();
+    
+    std::cout << "GPU: " << gpu_time << "ms\n";
+
 }
 
 
