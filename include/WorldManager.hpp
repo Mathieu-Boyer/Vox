@@ -8,7 +8,7 @@
 #include <chrono>
 
 
-#define MAX_RENDER 15
+#define MAX_RENDER 16
 
 class WorldManager
 {
@@ -33,6 +33,8 @@ public:
 };
 
 void WorldManager::loadChunks(){
+    auto t1 = std::chrono::high_resolution_clock::now();
+
     std::array<int, 3> coordinates = {(int)(camera.getPosition().x / CHUNK_SIZE),  (int)(camera.getPosition().y / CHUNK_SIZE), (int)(camera.getPosition().z / CHUNK_SIZE)};
     for (int i = 0 - (MAX_RENDER / 2); i < (MAX_RENDER/2 + MAX_RENDER%2); i++)
         for (int j = 0 - (MAX_RENDER / 2); j < (MAX_RENDER/2 + MAX_RENDER%2); j++)
@@ -43,12 +45,19 @@ void WorldManager::loadChunks(){
                 toLoad[2] += k;
                 auto it = world.find(toLoad) ;
                 if (it != world.end()){
+
                     loadedChunks[i + MAX_RENDER/2][j + MAX_RENDER/2][k + MAX_RENDER/2].first = it->second.toMesh();
                     loadedChunks[i + MAX_RENDER/2][j + MAX_RENDER/2][k + MAX_RENDER/2].second = &it->second;
                 }
                 else
                     loadedChunks[i + MAX_RENDER/2][j + MAX_RENDER/2][k + MAX_RENDER/2].second = nullptr;
             }
+
+    auto t2 = std::chrono::high_resolution_clock::now();
+
+    auto cpu_time = std::chrono::duration<double, std::milli>(t2 - t1).count();
+        std::cout << "CPU2 : " << cpu_time << "ms\n";
+
 }
 
 WorldManager::WorldManager(/* args */) : 

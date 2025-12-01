@@ -122,7 +122,7 @@ void Chunk::buildCubeVertices(std::vector<Vertex> &vertices, std::array<float, 3
             continue;
         }
 
-    for (int tri = 0; tri < 2; tri++) {  // Process 2 triangles per face
+    for (int tri = 0; tri < 2; tri++) {
         for (int j = 0; j < 3; j++) {
             Vertex vertex;
             vertex.position = blockVertices[triangles[i][j][0]];
