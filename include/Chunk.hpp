@@ -1,5 +1,5 @@
 #pragma once
-#define CHUNK_SIZE 32
+#define CHUNK_SIZE 5
 #include "Block.hpp"
 #include "Shaders.hpp"
 #include "Camera.hpp"

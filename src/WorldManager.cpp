@@ -32,7 +32,7 @@ void WorldManager::loadChunks(){
 
 WorldManager::WorldManager(/* args */) : 
     shader("shaders/default.vs", "shaders/default.fs"), camera({0,1,CHUNK_SIZE/2}), 
-    textures({Texture("textures/dirt.png"), Texture("textures/stone.png")}),
+    textures({Texture("textures/spritesheet_tiles.png"), Texture("textures/stone.png")}),
     cubeModel("models/cube.obj"), cubeMeshes(cubeModel.getMeshes())
 {
 
@@ -64,7 +64,7 @@ Chunk *WorldManager::getChunk(int x, int y, int z){
 void WorldManager::drawChunk(Mesh *mesh, Chunk &chunk){
     shader.use();
     const auto coordinates = chunk.getCoordinates();
-    Renderable chunkInstance(*mesh, &textures[0]);
+    Renderable chunkInstance(*mesh, &textures[1]);
 
      chunkInstance.transform._translation = {
                     coordinates[0] * CHUNK_SIZE,

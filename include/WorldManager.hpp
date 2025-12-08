@@ -9,7 +9,7 @@
 #include <chrono>
 class Chunk;
 
-#define MAX_RENDER 20
+#define MAX_RENDER 5
 
 class WorldManager
 {

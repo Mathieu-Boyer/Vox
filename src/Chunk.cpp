@@ -113,6 +113,23 @@ void Chunk::buildTriangles(std::vector<Vertex>& vertices, int face, int layer, i
             vertex.textureCoordinates = (textureCoords[faces[face][tri][vert][1]]);
             vertex.textureCoordinates.x *= width;
             vertex.textureCoordinates.y *= height;
+
+            // int tilesPerRow = 9;
+            // int tilesPerColumn = 10;
+            // int tileIndex = 3;  // which tile you want
+
+            // // Calculate which grid cell
+            // int tileX = tileIndex % tilesPerRow;
+            // int tileY = tileIndex / tilesPerRow;
+
+            // // Convert to normalized coordinates (0-1 range)
+            // float tileWidth = 1.0f / tilesPerRow;
+            // float tileHeight = 1.0f / tilesPerColumn;
+
+            // vertex.textureCoordinates.x = (tileX + vertex.textureCoordinates.x) * tileWidth;
+            // vertex.textureCoordinates.y = (tileY + vertex.textureCoordinates.y ) * tileHeight;
+            // vertex.textureCoordinates.x = 1 / (1 % 9);
+            // vertex.textureCoordinates.y = 1 / (1 / 10);
             vertices.push_back(vertex);
         }
     }
