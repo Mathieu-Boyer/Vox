@@ -15,13 +15,14 @@
 #include "GLFW/glfw3.h"
 #include <string>
 #include "Shaders.hpp"
-#include "Texture.hpp"
+// #include "Texture.hpp"
 #include "Model.hpp"
 #include "Mesh.hpp"
 #include "Renderable.hpp"
 #include "Camera.hpp"
 #include "Chunk.hpp"
 #include "WorldManager.hpp"
+#include "TextureArray.hpp"
 
 
 

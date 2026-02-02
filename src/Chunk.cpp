@@ -13,7 +13,7 @@ Chunk::Chunk(int x, int y, int z) :_x(x),_y(y),_z(z)
     for (unsigned int i = 0; i < CHUNK_SIZE; i++)
         for (unsigned int j = 0; j < CHUNK_SIZE; j++)
             for (unsigned int k = 0; k < CHUNK_SIZE; k++){
-                    _data[i][j][k] =   y == 1 ? AIR : DIRT;//j == 1 ? AIR :
+                    _data[i][j][k] =   y == 0 ? STONE : DIRT;//j == 1 ? AIR :
             }
     
 }
@@ -63,7 +63,7 @@ int Chunk::getBlockAt(int x, int y , int z){
     return _data[x][y][z];
 }
 
-void Chunk::buildTriangles(std::vector<Vertex>& vertices, int face, int layer, int x, int y, int height, int width){
+void Chunk::buildTriangles(std::vector<Vertex>& vertices, int face, int layer, int x, int y, int height, int width, int id){
     std::array<std::array<glm::vec3, 3>, 3> triangles;
     if (face < 2)
         triangles = {{
@@ -113,23 +113,8 @@ void Chunk::buildTriangles(std::vector<Vertex>& vertices, int face, int layer, i
             vertex.textureCoordinates = (textureCoords[faces[face][tri][vert][1]]);
             vertex.textureCoordinates.x *= width;
             vertex.textureCoordinates.y *= height;
+            vertex.textureID = id;
 
-            // int tilesPerRow = 9;
-            // int tilesPerColumn = 10;
-            // int tileIndex = 3;  // which tile you want
-
-            // // Calculate which grid cell
-            // int tileX = tileIndex % tilesPerRow;
-            // int tileY = tileIndex / tilesPerRow;
-
-            // // Convert to normalized coordinates (0-1 range)
-            // float tileWidth = 1.0f / tilesPerRow;
-            // float tileHeight = 1.0f / tilesPerColumn;
-
-            // vertex.textureCoordinates.x = (tileX + vertex.textureCoordinates.x) * tileWidth;
-            // vertex.textureCoordinates.y = (tileY + vertex.textureCoordinates.y ) * tileHeight;
-            // vertex.textureCoordinates.x = 1 / (1 % 9);
-            // vertex.textureCoordinates.y = 1 / (1 / 10);
             vertices.push_back(vertex);
         }
     }
@@ -195,7 +180,7 @@ std::unique_ptr<Mesh> Chunk::toMesh(WorldManager &worldManager){
                         }
                         if (!done) height++;
                     }
-                    buildTriangles(vertices,face, layer, x, y, height, width);
+                    buildTriangles(vertices,face, layer, x, y, height, width, plane[y][x]);
                     for (int dy = 0; dy < height; dy++) {
                         for (int dx = 0; dx < width; dx++) {
                             plane[y + dy][x + dx] = AIR;

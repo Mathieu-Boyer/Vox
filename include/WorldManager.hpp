@@ -18,7 +18,7 @@ private:
     std::array<std::array<std::array<std::pair<std::unique_ptr<Mesh>, Chunk*> , MAX_RENDER> , MAX_RENDER>, MAX_RENDER > loadedChunks;
     Shaders shader;
     Camera camera;
-    const std::array<Texture, 2> textures;
+    // const std::array<Texture, 2> textures;
     Model cubeModel;
     const std::vector<Mesh> &cubeMeshes;
     void drawChunk(Mesh *mesh, Chunk &chunk);

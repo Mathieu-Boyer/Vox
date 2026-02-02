@@ -65,7 +65,7 @@ private:
     int _z = 0;
     std::array<std::array<std::array<int, CHUNK_SIZE>, CHUNK_SIZE>, CHUNK_SIZE> _data;
     int occlusionCulling(unsigned int axis, std::array<int , 3> &blockPosition, unsigned int currentFace, WorldManager &worldManager);
-    void buildTriangles(std::vector<Vertex>& vertices, int face, int layer, int x, int y, int height, int width);
+    void buildTriangles(std::vector<Vertex>& vertices, int face, int layer, int x, int y, int height, int width, int id);
     void greedyMesh(std::vector<Vertex>& vertices, std::array<std::array<int, CHUNK_SIZE>, CHUNK_SIZE> &plane);
 public:
     Chunk();

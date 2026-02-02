@@ -100,7 +100,8 @@ double fps = 0.0;
     // unsigned int i = 0;
             // worldManager.loadChunks();
 
-
+    TextureArray textures({"textures/dirt.png", "textures/stone.png"});
+    textures.bind(0);
     while (!glfwWindowShouldClose(_window)){
 
         glfwPollEvents();
@@ -110,12 +111,10 @@ double fps = 0.0;
         
 //         // i++;
 
-
-// // Inside your main loop (every frame):
-double currentTime = glfwGetTime(); // or whatever timer you're using
+double currentTime = glfwGetTime();
 frameCount++;
 
-if (currentTime - lastTime >= 1.0) { // Every second
+if (currentTime - lastTime >= 1.0) {
     fps = frameCount / (currentTime - lastTime);
     
     std::cout << "FPS: " << fps << std::endl;

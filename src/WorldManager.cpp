@@ -32,7 +32,7 @@ void WorldManager::loadChunks(){
 
 WorldManager::WorldManager(/* args */) : 
     shader("shaders/default.vs", "shaders/default.fs"), camera({0,1,CHUNK_SIZE/2}), 
-    textures({Texture("textures/spritesheet_tiles.png"), Texture("textures/stone.png")}),
+
     cubeModel("models/cube.obj"), cubeMeshes(cubeModel.getMeshes())
 {
 
@@ -40,7 +40,10 @@ WorldManager::WorldManager(/* args */) :
         for (int j = 0 - (MAX_RENDER / 2); j < (MAX_RENDER/2 + MAX_RENDER%2); j++)
             for (int k = 0 - (MAX_RENDER / 2); k < (MAX_RENDER/2 + MAX_RENDER%2); k++)
                 world[(std::array<int, 3>){i, j, k}] = Chunk(i, j, k);
+
+    shader.setInt("texArray", 0);
     loadChunks();
+
 }
 
 Camera &WorldManager::getCamera(){
@@ -64,7 +67,7 @@ Chunk *WorldManager::getChunk(int x, int y, int z){
 void WorldManager::drawChunk(Mesh *mesh, Chunk &chunk){
     shader.use();
     const auto coordinates = chunk.getCoordinates();
-    Renderable chunkInstance(*mesh, &textures[1]);
+    Renderable chunkInstance(*mesh);
 
      chunkInstance.transform._translation = {
                     coordinates[0] * CHUNK_SIZE,

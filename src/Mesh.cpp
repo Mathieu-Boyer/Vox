@@ -52,8 +52,11 @@ void Mesh::setup(){
     glVertexAttribPointer(1, 2 , GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, textureCoordinates));
     glEnableVertexAttribArray(1);
     
-    glVertexAttribPointer(2, 3 , GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, normal));
+    glVertexAttribPointer(2, 1 , GL_INT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, textureID));
     glEnableVertexAttribArray(2);
+
+    glVertexAttribPointer(3, 3 , GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, normal));
+    glEnableVertexAttribArray(3);
     // auto t2 = std::chrono::high_resolution_clock::now();
 
 

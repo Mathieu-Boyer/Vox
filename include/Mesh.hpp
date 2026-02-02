@@ -17,6 +17,7 @@ struct Vertex
 {
     glm::vec3 position;
     glm::vec2 textureCoordinates;
+    int textureID;
     glm::vec3 normal;
 };
 
